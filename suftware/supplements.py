@@ -1,25 +1,18 @@
 from __future__ import division
+
+import sys
+import time
+import multiprocessing as mp
+import itertools
+
 import numpy as np
 import scipy as sp
 from scipy.sparse import diags
-import multiprocessing as mp
-import itertools
-import time
-import sys
 
-if sys.version_info[0] == 2:
-    # python 2 imports
-    import deft_core
-    import utils
-    import maxent
-    from src.utils import ControlledError
-
-else:
-    # python 3 imports
-    from src import deft_core
-    from src import maxent
-    from src import utils
-    from src.utils import ControlledError
+import deft_core
+import maxent
+import utils
+from utils import ControlledError
 
 x_MIN = -500
 
@@ -659,4 +652,3 @@ def posterior_sampling(points, R, Delta, N, G, num_pt_samples, fix_t_at_t_star):
 
     # Return Q samples along with their weights
     return Q_samples, phi_samples, phi_weights
-

@@ -1,9 +1,11 @@
-import scipy as sp
-import numpy as np
 import sys
 import numbers
 from functools import wraps
+
+import numpy as np
 from numpy.polynomial.legendre import legval, legval2d
+
+import scipy as sp
 
 # A very small floating point number, used to prevent taking logs of 0
 TINY_FLOAT64 = sp.finfo(sp.float64).tiny
@@ -14,7 +16,6 @@ PHI_STD_REG = 100.0
 LISTLIKE = (list, np.ndarray, np.matrix, range)
 
 # This is useful for testing whether something is a number
-#NUMBER = (int, float, long)
 NUMBER = (int, float, int)
 
 # This is useful for testing whether something is an array
@@ -563,3 +564,4 @@ def handle_errors(func):
                 return obj
 
     return wrapped_func
+    

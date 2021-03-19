@@ -11,13 +11,16 @@ import time
 #import maxent
 
 # python 3 imports
-from src import utils
-from src import supplements
-from src import maxent
+import utils
+import supplements
+import maxent
 
 # Import error handling
 #from utils import ControlledError
 from src.utils import ControlledError
+
+from src.consumedtimetimer import ConsumedTimeTimer
+
 
 # Put hard bounds on how big or small t can be. T_MIN especially seems to help convergence
 T_MAX = 40
@@ -789,25 +792,13 @@ def run(counts_array, Delta, Z_eval, num_Z_samples, t_start, DT_MAX, print_t,
 
         Delta (Smoothness_operator instance):
             An operator providing the definition of 'smoothness' used by DEFT
-    """
 
-    # Make sure details is valid
-    if not isinstance(details, bool):
-        raise ControlledError('/deft_core._run/ details must be a boolean: details = %s' % type(details))
+        details (boolean): ???
+    """
 
     # Get number of gridpoints and kernel dimension from smoothness operator
     G = Delta.get_G()
     kernel_dim = Delta.get_kernel_dim()
-
-    # Make sure counts_array is valid
-    if not (len(counts_array) == G):
-        raise ControlledError('/deft_core._run/ counts_array must have length %d: len(counts_array) = %d' %
-                              (G, len(counts_array)))
-    if not all(counts_array >= 0):
-        raise ControlledError('/deft_core._run/ counts_array is not non-negative: counts_array = %s' % counts_array)
-    if not (sum(counts_array > 0) > kernel_dim):
-        raise ControlledError('/deft_core._run/ Only %d elements of counts_array contain data, less than kernel dimension %d' %
-                              (sum(counts_array > 0), kernel_dim))
 
     # Get number of data points and normalize histogram
     N = sum(counts_array)
@@ -817,12 +808,11 @@ def run(counts_array, Delta, Z_eval, num_Z_samples, t_start, DT_MAX, print_t,
     # Compute the MAP curve
     #
 
-    start_time = time.clock()
+    clock = ConsumedTimeTimer()
+    clock.tic()
     map_curve = compute_map_curve(N, R, Delta, Z_eval, num_Z_samples, t_start, DT_MAX, print_t, tollerance, resolution,max_log_evidence_ratio_drop)
-    end_time = time.clock()
-    map_curve_compute_time = end_time - start_time
-    if print_t:
-        print('MAP curve computation took %.2f sec' % map_curve_compute_time)
+    print('MAP curve computation took')
+    clock.toc()
 
     # Identify the optimal density estimate
     points = map_curve.points
@@ -843,7 +833,7 @@ def run(counts_array, Delta, Z_eval, num_Z_samples, t_start, DT_MAX, print_t,
         Q_samples, phi_samples, phi_weights = \
             supplements.posterior_sampling(points, R, Delta, N, G,
                                            num_pt_samples, fix_t_at_t_star)
-            
+
 
 
     #

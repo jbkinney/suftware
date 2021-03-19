@@ -2,8 +2,8 @@ import scipy as sp
 import numpy as np
 from scipy.linalg import solve, det, norm
 
-from src import utils
-from src.utils import ControlledError
+import utils
+from utils import ControlledError
 
 PHI_STD_REG = utils.PHI_STD_REG 
 
