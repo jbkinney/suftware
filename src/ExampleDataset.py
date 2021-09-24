@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import numpy as np
-from src.utils import ControlledError, check, handle_errors
+from suftware.src.utils import ControlledError, check, handle_errors
 import os
 
 # Load directory of file

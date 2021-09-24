@@ -3,19 +3,19 @@ Head module. Contains classes for user interfacing.
 """
 
 # Make classes local
-from src.DensityEstimator import DensityEstimator
-from src.ExampleDataset import ExampleDataset
-from src.Density import Density
-from src.GaussianMixtureDensity import GaussianMixtureDensity
-from src.utils import ControlledError as ControlledError
-from src.SimulatedDensity import SimulatedDensity, SimulatedDataset
-from src.SimulatedDensity import list_simulated_densities
-from src.ExampleDataset import list_example_datasets
-from src.ScipyStatsDensity import ScipyStatsDensity
+from suftware.src.DensityEstimator import DensityEstimator
+from suftware.src.ExampleDataset import ExampleDataset
+from suftware.src.Density import Density
+from suftware.src.GaussianMixtureDensity import GaussianMixtureDensity
+from suftware.src.utils import ControlledError as ControlledError
+from suftware.src.SimulatedDensity import SimulatedDensity, SimulatedDataset
+from suftware.src.SimulatedDensity import list_simulated_densities
+from suftware.src.ExampleDataset import list_example_datasets
+from suftware.src.ScipyStatsDensity import ScipyStatsDensity
 
 
 # Enable plotting
-from src.utils import enable_graphics, check, ControlledError
+from suftware.src.utils import enable_graphics, check, ControlledError
 
 
 def demo(example='real_data'):

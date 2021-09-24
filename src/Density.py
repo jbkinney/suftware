@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 from scipy import interpolate
-from src.utils import check, handle_errors, enable_graphics
+from suftware.src.utils import check, handle_errors, enable_graphics
 
 class Density:
     """

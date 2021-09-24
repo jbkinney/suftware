@@ -6,11 +6,11 @@ from scipy.linalg import det, eigh, qr
 from scipy.special import comb
 import pickle
 
-from src import utils
+from suftware.src import utils
 
 # Import error handling
 #from utils import ControlledError
-from src.utils import ControlledError
+from suftware.src.utils import ControlledError
 
 
 # Class container for Laplacian operators. Constructor computes spectrum.

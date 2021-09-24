@@ -15,11 +15,11 @@ MAX_NUM_POSTERIOR_SAMPLES = 1000
 MAX_NUM_SAMPLES_FOR_Z = 1000000
 
 # Import deft-related code
-from src import deft_core
-from src import laplacian
-from src.utils import ControlledError, enable_graphics, check, handle_errors,\
+from suftware.src import deft_core
+from suftware.src import laplacian
+from suftware.src.utils import ControlledError, enable_graphics, check, handle_errors,\
     clean_numerical_input, LISTLIKE
-from src.Density import Density
+from suftware.src.Density import Density
 
 class DensityEstimator:
     """Estimates a 1D probability density from sampled data.

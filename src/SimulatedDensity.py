@@ -1,7 +1,7 @@
 import numpy as np
-from src.GaussianMixtureDensity import GaussianMixtureDensity
-from src.ScipyStatsDensity import ScipyStatsDensity
-from src.utils import check, handle_errors
+from suftware.src.GaussianMixtureDensity import GaussianMixtureDensity
+from suftware.src.ScipyStatsDensity import ScipyStatsDensity
+from suftware.src.utils import check, handle_errors
 import scipy.stats as ss
 
 @handle_errors

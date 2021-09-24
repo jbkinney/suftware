@@ -7,19 +7,10 @@ import itertools
 import time
 import sys
 
-if sys.version_info[0] == 2:
-    # python 2 imports
-    import deft_core
-    import utils
-    import maxent
-    from src.utils import ControlledError
-
-else:
-    # python 3 imports
-    from src import deft_core
-    from src import maxent
-    from src import utils
-    from src.utils import ControlledError
+from suftware.src import deft_core
+from suftware.src import maxent
+from suftware.src import utils
+from suftware.src.utils import ControlledError
 
 x_MIN = -500
 

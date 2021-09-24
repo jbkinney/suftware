@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.stats as ss
-from src.utils import grid_info_from_bbox_and_G
-from src.Density import Density
-from src.utils import check, handle_errors
+from suftware.src.utils import grid_info_from_bbox_and_G
+from suftware.src.Density import Density
+from suftware.src.utils import check, handle_errors
 
 class GaussianMixtureDensity(Density):
     """

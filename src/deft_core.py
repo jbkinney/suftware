@@ -6,12 +6,12 @@ from scipy.linalg import det, eigh, eigvalsh
 import time
 
 # python 3 imports
-from src import utils
-from src import supplements
-from src import maxent
+from suftware.src import utils
+from suftware.src import supplements
+from suftware.src import maxent
 
 # Import error handling
-from src.utils import ControlledError
+from suftware.src.utils import ControlledError
 
 # Put hard bounds on how big or small t can be. T_MIN especially seems to help convergence
 T_MAX = 40
