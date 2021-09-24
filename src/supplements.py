@@ -100,8 +100,8 @@ def Laplace_approach(phi_t, R, Delta, t, N, num_samples, go_parallel,
     w_sample_mean_std = sp.std(phi_weights) / sp.sqrt(num_samples)
 
     # Return correction and other stuff
-    correction = sp.log(w_sample_mean)
-    return correction, w_sample_mean, w_sample_mean_std
+    log_Z_correction = sp.log(w_sample_mean)
+    return log_Z_correction, w_sample_mean, w_sample_mean_std
 
 
 # For each eigen-component, draw y samples according to the distribution
@@ -227,8 +227,8 @@ def GLaplace_approach(phi_t, R, Delta, t, N, num_samples, go_parallel,
     w_sample_mean_std = sp.std(phi_weights) / sp.sqrt(num_samples)
 
     # Return correction and other stuff
-    correction = sp.sum(sp.log(gammas)) + sp.log(w_sample_mean)
-    return correction, w_sample_mean, w_sample_mean_std
+    log_Z_correction = sp.sum(sp.log(gammas)) + sp.log(w_sample_mean)
+    return log_Z_correction, w_sample_mean, w_sample_mean_std
 
 
 # For each eigen-component, calculate gamma and draw y samples according to the distribution
@@ -422,12 +422,12 @@ def Feynman_diagrams(phi_t, R, Delta, t, N):
         V = sp.exp(-phi_t) * (N / G)
 
     # Calculate Feynman diagrams
-    correction = diagrams_1st_order(G, P_mat, V)
+    log_Z_correction = diagrams_1st_order(G, P_mat, V)
 
     # Return the correction and other stuff
     w_sample_mean = 1.0
     w_sample_mean_std = 0.0
-    return correction, w_sample_mean, w_sample_mean_std
+    return log_Z_correction, w_sample_mean, w_sample_mean_std
 
 
 # Feynman diagrams of order 1/N
@@ -475,40 +475,7 @@ def diagrams_1st_order(G, P, V):
 
 # Feynman diagrams of order 1/N^2 ---> Under construction
 def diagrams_2nd_order(G, P, V):
-    time1 = time.time()
-    num_samples = 300000  # Use different value for large and small t ?
-    index_samples = np.random.randint(0, G - 1, 4 * num_samples).reshape(
-        [num_samples, 4])
-
-    s_array = np.zeros(num_samples)
-    for n in range(num_samples):
-        i = index_samples[n, 0]
-        j = index_samples[n, 1]
-        k = index_samples[n, 2]
-        l = index_samples[n, 3]
-        s_array[n] = V[i] * V[j] * V[k] * V[l] * P[i, j] * P[i, k] * P[i, l] * \
-                     P[j, k] * P[j, l] * P[k, l]
-    s = sp.sum(s_array) * G ** 4 / num_samples
-    ms = sp.mean(s_array)
-    ds = sp.std(s_array) / sp.sqrt(num_samples)
-    print('')
-    print('s =', s)
-    print(ds / ms)
-    print('time 1 =', time.time() - time1)
-
-    """
-    time2 = time.time()
-    s2 = 0
-    for i in range(G):
-        for j in range(G):
-            for k in range(G):
-                for l in range(G):
-                    s2 += V[i] * V[j] * V[k] * V[l] * P[i,j] * P[i,k] * P[i,l] * P[j,k] * P[j,l] * P[k,l]
-    print 's2 =', s2
-    print 'time 2 =', time.time()-time2
-    """
-
-    return 0
+    return np.nan
 
 
 # Metropolis Monte Carlo

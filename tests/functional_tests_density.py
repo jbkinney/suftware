@@ -221,7 +221,7 @@ def test_ExampleDataset___init__():
 
 def test_ExampleDensity_list():
     """
-    Test ExampleDensity.list()
+    Test SimulatedDensity.list()
     """
     # No parameters
     test_parameter_values(func=sw.ExampleDataset.list)
@@ -548,7 +548,7 @@ if __name__ == '__main__':
     test_DensityEstimator_evaluate()
     test_DensityEstimator_evaluate_samples()
 
-    # ExampleDensity methods
+    # SimulatedDensity methods
     test_ExampleDataset___init__()
     test_ExampleDensity_list()
 

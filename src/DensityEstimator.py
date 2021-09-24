@@ -6,19 +6,20 @@ import time
 import pdb
 import numbers
 import pandas as pd
+import time
 
 SMALL_NUM = 1E-6
 MAX_NUM_GRID_POINTS = 1000
 DEFAULT_NUM_GRID_POINTS = 100
 MAX_NUM_POSTERIOR_SAMPLES = 1000
-MAX_NUM_SAMPLES_FOR_Z = 1000
+MAX_NUM_SAMPLES_FOR_Z = 1000000
 
 # Import deft-related code
 from src import deft_core
 from src import laplacian
 from src.utils import ControlledError, enable_graphics, check, handle_errors,\
     clean_numerical_input, LISTLIKE
-from src.DensityEvaluator import DensityEvaluator
+from src.Density import Density
 
 class DensityEstimator:
     """Estimates a 1D probability density from sampled data.
@@ -60,6 +61,11 @@ class DensityEstimator:
     num_posterior_samples: (int >= 0)
         Number of samples to draw from the Bayesian posterior. Restricted to
         0 <= num_posterior_samples <= MAX_NUM_POSTERIOR_SAMPLES.
+
+    compute_K_coeff: (bool)
+        Whether to compute the K coefficient (Kinney, 2015, PRE, Eq. 29),
+        the sign of which tests the validity of the MaxEnt hypothesis on the
+        data provided.
 
     max_t_step: (float > 0)
         Upper bound on the amount by which the parameter ``t``
@@ -136,6 +142,23 @@ class DensityEstimator:
         The importance weights corresponding to each posterior sample.
         (1D np.array)
 
+    K_coeff:
+        The value of the K coefficient (Kinney, 2015, Eq. 29). (float)
+
+    ells:
+        The smoothness length scales at which the MAP curve was computed.
+        (np.array)
+
+    log_Es:
+        The log evidence ratio values (Kinney, 2015, Eq. 27) at each length
+        scale along the MAP curve. (np.array)
+
+    max_log_E:
+        The log evidence ratio at the optimal length scale. (float)
+
+    runtime:
+        The amount of time (in seconds) taken to execute.
+
     """
 
     @handle_errors
@@ -148,6 +171,8 @@ class DensityEstimator:
                  alpha=3,
                  periodic=False,
                  num_posterior_samples=100,
+                 compute_K_coeff=True,
+                 t_start=None,
                  max_t_step=1.0,
                  tolerance=1E-6,
                  resolution=0.1,
@@ -158,6 +183,9 @@ class DensityEstimator:
                  seed=None,
                  print_t=False):
 
+        # Start timer
+        start_time = time.time()
+
         # Record other inputs as class attributes
         self.alpha = alpha
         self.grid = grid
@@ -167,6 +195,7 @@ class DensityEstimator:
         self.periodic = periodic
         self.Z_evaluation_method = evaluation_method_for_Z
         self.num_samples_for_Z = num_samples_for_Z
+        self.t_start = t_start
         self.max_t_step = max_t_step
         self.print_t = print_t
         self.tolerance = tolerance
@@ -176,6 +205,7 @@ class DensityEstimator:
         self.sample_only_at_l_star = sample_only_at_l_star
         self.max_log_evidence_ratio_drop = max_log_evidence_ratio_drop
         self.data = data
+        self.compute_K_coefficient = compute_K_coeff
         self.results = None
 
         # Validate inputs
@@ -195,10 +225,12 @@ class DensityEstimator:
         self.maxent = self.results.M
         self.phi_star_values = self.results.phi_star
 
+        # Save K coefficient
+        self.K_coeff = self.results.K_coeff
+
         # Compute evaluator for density
-        self.density_func = DensityEvaluator(self.phi_star_values,
-                                             self.grid,
-                                             self.bounding_box)
+        self.density_func = Density(field_values=self.phi_star_values,
+                                    grid=self.grid)
 
         # Compute optimal density at grid points
         self.values = self.evaluate(self.grid)
@@ -212,9 +244,8 @@ class DensityEstimator:
 
             # Compute evaluator for all posterior samples
             self.sample_density_funcs = [
-                DensityEvaluator(field_values=self.sample_field_values[:, k],
-                                 grid=self.grid,
-                                 bounding_box=self.bounding_box)
+                Density(field_values=self.sample_field_values[:, k],
+                        grid=self.grid)
                 for k in range(self.num_posterior_samples)
             ]
 
@@ -228,6 +259,9 @@ class DensityEstimator:
                                         / np.sum(self.sample_weights**2)
             self.effective_sampling_efficiency = \
                 self.effective_sample_size / self.num_posterior_samples
+
+        # Store execution time in seconds
+        self.runtime = time.time() - start_time
 
     @handle_errors
     def plot(self, ax=None,
@@ -562,7 +596,7 @@ class DensityEstimator:
             h = self.grid_spacing
             eps = 1E-10
             assert (all(Q >= 0))
-            return np.sum(h * Q * np.log2(Q + eps))
+            return -np.sum(h * Q * np.log2(Q + eps))
 
         def mean(Q):
             x = self.grid
@@ -672,6 +706,7 @@ class DensityEstimator:
         periodic = self.periodic
         Z_eval = self.Z_evaluation_method
         num_Z_samples = self.num_samples_for_Z
+        t_start = self.t_start
         DT_MAX = self.max_t_step
         print_t = self.print_t
         tollerance = self.tolerance
@@ -682,7 +717,7 @@ class DensityEstimator:
         max_log_evidence_ratio_drop = self.max_log_evidence_ratio_drop
 
         # Start clock
-        start_time = time.clock()
+        start_time = time.time()
 
         # If deft_seed is specified, set it
         if not (deft_seed is None):
@@ -691,13 +726,13 @@ class DensityEstimator:
             np.random.seed(None)
 
         # Create Laplacian
-        laplacian_start_time = time.clock()
+        laplacian_start_time = time.time()
         if periodic:
             op_type = '1d_periodic'
         else:
             op_type = '1d_bilateral'
         Delta = laplacian.Laplacian(op_type, alpha, G)
-        laplacian_compute_time = time.clock() - laplacian_start_time
+        laplacian_compute_time = time.time() - laplacian_start_time
         if print_t:
             print('Laplacian computed de novo in %f sec.'%laplacian_compute_time)
 
@@ -714,19 +749,20 @@ class DensityEstimator:
               (num_nonempty_bins, self.alpha))
 
         # Compute initial t
-        t_start = min(0.0, sp.log(N)-2.0*alpha*sp.log(alpha/h))
+        if t_start is None:
+            t_start = min(0.0, sp.log(N)-2.0*alpha*sp.log(alpha/h))
+            if t_start < -10.0:
+                t_start /= 2
         if print_t:
             print('t_start = %0.2f' % t_start)
 
         # Do DEFT density estimation
-        core_results = deft_core.run(counts, Delta, Z_eval, num_Z_samples,
-                                     t_start, DT_MAX, print_t,
-                                     tollerance, resolution, num_pt_samples,
-                                     fix_t_at_t_star,
-                                     max_log_evidence_ratio_drop)
-
-        # Fill in results
-        results = core_results # Get all results from deft_core
+        results = deft_core.run(counts, Delta, Z_eval, num_Z_samples,
+                                t_start, DT_MAX, print_t,
+                                tollerance, resolution, num_pt_samples,
+                                fix_t_at_t_star,
+                                max_log_evidence_ratio_drop,
+                                self.compute_K_coefficient)
 
         # Normalize densities properly
         results.h = h
@@ -740,6 +776,13 @@ class DensityEstimator:
         if not (num_pt_samples == 0):
             results.Q_samples /= h
         results.Delta = Delta
+
+        # Save evidence-related results
+        points = results.map_curve.points
+        self.ts = np.array([p.t for p in points])
+        self.ells = h*(sp.exp(-self.ts)*N)**(1/(2.*alpha))
+        self.log_Es = np.array([p.log_E for p in points])
+        self.max_log_E = self.log_Es.max()
 
         # Store results
         self.results = results
@@ -844,6 +887,11 @@ class DensityEstimator:
         # periodic is bool
         check(isinstance(self.periodic, bool),
               'type(periodic) = %s; must be bool' % type(self.periodic))
+
+        # compute_K_coefficient is bool
+        check(isinstance(self.compute_K_coefficient, bool),
+              'type(compute_K_coefficient) = %s; must be bool' %
+              type(self.periodic))
 
         # evaluation_method_for_Z is valid
         Z_evals = ['Lap', 'Lap+Imp', 'Lap+Fey']

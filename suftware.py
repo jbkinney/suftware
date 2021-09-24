@@ -4,53 +4,20 @@ Head module. Contains classes for user interfacing.
 
 # Make classes local
 from src.DensityEstimator import DensityEstimator
-from src.SimulatedDataset import SimulatedDataset
 from src.ExampleDataset import ExampleDataset
-from src.DensityEvaluator import DensityEvaluator
+from src.Density import Density
+from src.GaussianMixtureDensity import GaussianMixtureDensity
 from src.utils import ControlledError as ControlledError
+from src.SimulatedDensity import SimulatedDensity, SimulatedDataset
+from src.SimulatedDensity import list_simulated_densities
+from src.ExampleDataset import list_example_datasets
+from src.ScipyStatsDensity import ScipyStatsDensity
+
 
 # Enable plotting
 from src.utils import enable_graphics, check, ControlledError
 
-# # Classes that have yet to be written
-# class Density2DEstimator:
-#     """
-#     Future class for density estimation in a two dimensional area.
-#     """
-#     pass
-#
-# class JointDensityEstimator:
-#     """
-#     Future class for estimating the joint distribution between two
-#     univariate quantities.
-#     """
-#     pass
-#
-# class SurvivalCurveEstimator:
-#     """
-#     Future class for computing simple survival curves
-#     """
-#     pass
-#
-# class ProportionalHazardsEstimator:
-#     """
-#     Future class for computing proportional hazards models
-#     """
-#     pass
-#
-# class GeneralizedHazardsEstimator:
-#     """
-#     Future class for computing generalized hazards models
-#     """
-#     pass
-#
-# class IntervalCensoredSurvivalEstimator:
-#     """
-#     Future class for computing interval-censored survival curves
-#     """
-#
 
-# try_me functions
 def demo(example='real_data'):
     """
     Performs a demonstration of suftware.
