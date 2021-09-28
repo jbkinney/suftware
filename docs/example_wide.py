@@ -1,7 +1,7 @@
 import suftware as sw
 
 # Simulate data using a pre-specified distribution
-dataset = sw.SimulatedDataset(distribution='wide', num_data_points=100)
+dataset = sw.SimulatedDataset(name='wide', num_data_points=100)
 
 # Perform one-dimensional density estimation
 density = sw.DensityEstimator(dataset.data, bounding_box=dataset.bounding_box)
