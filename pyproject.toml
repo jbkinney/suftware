@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "suftware"
-version = "1.0.3"
+version = "1.0.4"
 description = "One-dimensional density estimation using Bayesian field theory."
 authors = ["Justin B. Kinney <jkinney@cshl.edu>"]
 license = "MIT"

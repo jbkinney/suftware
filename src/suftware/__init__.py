@@ -2,6 +2,9 @@
 Head module. Contains classes for user interfacing.
 """
 
+# Set version
+from ._version import __version__
+
 # Make classes local
 from .density_estimator import DensityEstimator
 from .example_dataset import ExampleDataset
