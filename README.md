@@ -5,7 +5,7 @@ SUFTware (Statistics Using Field Theory) provides a fast and lightweight Python 
 **Installation** :
 pip install suftware
 
-Requirements (updated 2025-01-05, v1.0.3)
+Requirements (updated 2025-01-06, v1.0.3)
 * python >=3.10
 * numpy >=1.26.0
 * scipy >=1.5.0
