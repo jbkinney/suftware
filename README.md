@@ -13,6 +13,7 @@ Requirements (updated 2025-01-05, v1.0.3)
 * matplotlib >=3.3.0
 <br/>
 
+Other resources
 * Documentation: "http://suftware.readthedocs.org"
 * Github: "https://github.com/jbkinney/suftware"
 * PyPI: "https://pypi.python.org/pypi/suftware"
