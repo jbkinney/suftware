@@ -38,6 +38,9 @@ jobs:
     - name: Build distribution
       run: poetry build
       
+    - name: Configure Poetry TestPyPI repository
+      run: poetry config repositories.testpypi https://test.pypi.org/legacy/
+
     - name: Publish to TestPyPI
       run: poetry publish --repository testpypi
       env:
