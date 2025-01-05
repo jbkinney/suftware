@@ -1,0 +1,16 @@
+name: suftware_build
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - build
+  - pip
+  - pip:
+    - setuptools
+    - wheel
+    - twine

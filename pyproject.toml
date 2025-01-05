@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "suftware"
+version = "1.0.2"
+description = "One-dimensional density estimation using Bayesian field theory."
+authors = ["Justin B. Kinney <jkinney@cshl.edu>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+numpy = ">=1.26.0"
+scipy = ">=1.5.0"
+pandas = ">=1.2.0"
+matplotlib = ">=3.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
