@@ -9,8 +9,8 @@ jobs:
     name: Build and publish distribution 📦 on test-pypi
     runs-on: ubuntu-latest
     environment:
-      name: testpypi
-      url: https://test.pypi.org/p/<package-name>
+      name: pypi
+      url: https://pypi.org/p/suftware
     permissions:
       id-token: write  # mandatory for trusted publishing
     
