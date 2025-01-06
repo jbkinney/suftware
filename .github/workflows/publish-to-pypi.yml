@@ -2,7 +2,7 @@ name: Publish Python 🐍 distribution 📦 to TestPyPI
 on:
   push:
     tags:
-      - 'test-pypi*'
+      - 'v*'
 
 jobs:
   build-and-publish:
